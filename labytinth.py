@@ -481,7 +481,7 @@ class Labyrinth:
         self.walls_map = new_map
 
 # Usage
-obj = Labyrinth(wall_map_width=23, wall_map_height=16)
+obj = Labyrinth(wall_map_width=23, wall_map_height=12)
 walls_map = obj.walls_map
 
 obj.print_in_console()
