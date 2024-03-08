@@ -4,4 +4,4 @@
 
 <br>
 
-<p>Works only Windows</p>
+<p>Works only on Windows.</p>
