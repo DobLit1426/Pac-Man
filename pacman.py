@@ -89,9 +89,6 @@ class PacMan(Figur):
         new_y = self.y + y
         
         self.PositionSetzen(new_x, new_y)
-        
-        #self.Gehen(step)
-        #self.toggle_mouth_if_needed_or_update_counter(distance=abs(x)+abs(y))
     
     def place(self, x: int, y: int):
         self.PositionSetzen(x=x, y=y)

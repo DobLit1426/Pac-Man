@@ -11,6 +11,7 @@ from labytinth import Labyrinth
 from intern.zeichenfenster import Zeichenfenster
 from pacman import PacMan
 from foodpiece import FoodPiece
+from ghost import Ghost
 
 # Define some constraints
 #  - Pac-Man start position
@@ -228,14 +229,14 @@ for rect in [background_color_rectangle_1, background_color_rectangle_2, backgro
     rect.GanzNachVornBringen()
 
 # Create Pac-Man and place him in the middle of the free cell
-free_cell_matrix_x, free_cell_matrix_y = walls_obj.random_free_cell()
-pac_start_x, pac_start_y = get_wall_middle_in_regular_coordinates(wall_x=free_cell_matrix_x, wall_y=free_cell_matrix_y)
+pac_start_matrix_x, pac_start_matrix_y = walls_obj.random_free_cell()
+pac_start_x, pac_start_y = get_wall_middle_in_regular_coordinates(wall_x=pac_start_matrix_x, wall_y=pac_start_matrix_y)
 
 pac = PacMan(x=pac_start_x, y=pac_start_y, angle=0, size=pac_radius*2, step=pac_step)
-print(f"Pac-Man starts at matrix_x={free_cell_matrix_x} matrix_y={free_cell_matrix_y}")
+print(f"Pac-Man starts at matrix_x={pac_start_matrix_x} matrix_y={pac_start_matrix_y}")
 
 # Randomly decide Pac-Man's angle at start
-exits = walls_obj.get_exits(x=free_cell_matrix_x, y=free_cell_matrix_y)
+exits = walls_obj.get_exits(x=pac_start_matrix_x, y=pac_start_matrix_y)
 attempts_counter = 0
 while attempts_counter < 30:
     salt = randint(1, 500) # Python's randint module may prefer 0 over 1, 2, or 3, which causes the Pac-Man to almost always look left, but to prevent that there will be some "salt" added (-> word from cryptography)
@@ -326,34 +327,55 @@ def stop_pac_if_touches_walls():
                         pac.stop()
                         return
             
-
 background.GanzNachHintenBringen()
 pac.GanzNachVornBringen() # Place Pac-Man in front of all the other objects
 
 last_dir = -1 # Last direction
-met_wall_at = -1
+# met_wall_at = -1
 
-# ghost_a = Ghost(farbe="rot")
-#Zeichenfenster().run()
-# Indefinite loop of game
+# Red ghost
 while True:
-#     Check whether the move will make Pac-Man escape the scene and change the vector accordingly
-#    change_direction_if_will_escape_scene()
-    a = 0
-    # Move Pac-Man
-    if game_running:
-        pac.move_according_to_vector()
-        #pac.Gehen(10)
-        # Check whether Pac-Man just ate a food-dot
-#         if a == 1:
-        check_whether_pac_just_ate_food()
+    ghost_start_matrix_x, ghost_start_matrix_y = walls_obj.random_free_cell() # Get coordinates of a random free cell
+    if ((ghost_start_matrix_x != pac_start_matrix_x) or (ghost_start_matrix_y != pac_start_matrix_y)) and (abs(ghost_start_matrix_x - pac_start_matrix_x) >= 5 and abs(ghost_start_matrix_y - pac_start_matrix_y) >= 5): # If the free cell is different from the one of Pac-Man and the distance there is big enough, the ghost can be placed there
+        break
+
+ghost_start_regular_x, ghost_start_regular_y = get_wall_middle_in_regular_coordinates(wall_x=ghost_start_matrix_x, wall_y=ghost_start_matrix_y)
+
+ghost_red = Ghost(farbe="rot", x=ghost_start_regular_x, y=ghost_start_regular_y, angle=0, size=pac_radius*2, visible=True) # Create ghost
+ghost_red.GanzNachVornBringen() # Bring it in front of everything else in order to see it all the time
+
+# Blue ghost
+while True:
+    ghost_start_matrix_x, ghost_start_matrix_y = walls_obj.random_free_cell() # Get coordinates of a random free cell
+    if ((ghost_start_matrix_x != pac_start_matrix_x) or (ghost_start_matrix_y != pac_start_matrix_y)) and (abs(ghost_start_matrix_x - pac_start_matrix_x) >= 5 and abs(ghost_start_matrix_y - pac_start_matrix_y) >= 5): # If the free cell is different from the one of Pac-Man and the distance there is big enough, the ghost can be placed there
+        ghost_start_regular_x, ghost_start_regular_y = get_wall_middle_in_regular_coordinates(wall_x=ghost_start_matrix_x, wall_y=ghost_start_matrix_y)
+        if ghost_start_regular_x != ghost_red.x or ghost_start_regular_y != ghost_red.y: 
+            break
+
+ghost_blue = Ghost(farbe="weiss", x=ghost_start_regular_x, y=ghost_start_regular_y, angle=0, size=pac_radius*2, visible=True) # Create ghost
+ghost_blue.GanzNachVornBringen() # Bring it in front of everything else in order to see it all the time
+
+
+Zeichenfenster().run()
+# Indefinite loop of game
+# while True:
+# #     Check whether the move will make Pac-Man escape the scene and change the vector accordingly
+# #    change_direction_if_will_escape_scene()
+#     a = 0
+#     # Move Pac-Man
+#     if game_running:
+#         pac.move_according_to_vector()
+#         #pac.Gehen(10)
+#         # Check whether Pac-Man just ate a food-dot
+# #         if a == 1:
+#         check_whether_pac_just_ate_food()
         
-        stop_pac_if_touches_walls()
-#             a = 0
-#         else:
-#             a += 1
-    #   Stop for a predefined time
-        sleep(waiting_time)
+#         stop_pac_if_touches_walls()
+# #             a = 0
+# #         else:
+# #             a += 1
+#     #   Stop for a predefined time
+#         sleep(waiting_time)
         
 
 # Only for use on MacOS

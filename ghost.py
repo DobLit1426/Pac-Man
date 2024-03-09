@@ -29,6 +29,16 @@ class Ghost(Figur):
         
         # self.FigurteilFestlegenDreieck(x1=size*15/50, y1=0, x2=size, y2=-0.1*size, x3=size, y3=0.1*size, farbe="schwarz")
 
-ghost = Ghost(farbe="rot", x=100, y=100, angle=0, size=50, visible=True)
+    def move(self, x: int, y: int):
+        new_x = self.x + x
+        new_y = self.y + y
+        
+        self.PositionSetzen(new_x, new_y)
+    
+    def place(self, x: int, y: int):
+        self.PositionSetzen(x=x, y=y)
+        
+        
+# ghost = Ghost(farbe="rot", x=100, y=100, angle=0, size=50, visible=True)
 
-Zeichenfenster().run()
+# Zeichenfenster().run()
